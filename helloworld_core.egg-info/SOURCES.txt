@@ -1,0 +1,9 @@
+README.md
+setup.py
+helloworld/core/__init__.py
+helloworld/core/test.py
+helloworld_core.egg-info/PKG-INFO
+helloworld_core.egg-info/SOURCES.txt
+helloworld_core.egg-info/dependency_links.txt
+helloworld_core.egg-info/namespace_packages.txt
+helloworld_core.egg-info/top_level.txt
