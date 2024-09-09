@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar, List, Optional
+from typing import Generic, List, Optional
+from typing_extensions import TypeVar
 
 TEntity = TypeVar('TEntity')
-TModel = TypeVar('TModel')
+TModel = TypeVar('TModel', bound=Optional[object], default=None)
 
 class AbstractRepository(ABC, Generic[TEntity, TModel]):
     @abstractmethod
@@ -18,5 +19,5 @@ class AbstractRepository(ABC, Generic[TEntity, TModel]):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, entity_id: str) -> None:
+    async def delete_by_id(self, entity_id: str) -> None:
         raise NotImplementedError
