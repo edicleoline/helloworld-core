@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABC
 
 from helloworld.core.use_cases.abstract_use_case import AbstractUseCase, TRequest, TResponse
