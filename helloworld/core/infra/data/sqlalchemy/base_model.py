@@ -1,16 +1,25 @@
+from __future__ import annotations
+
 from typing import Generic, TypeVar, Type
 from ulid import ULID
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.ext.declarative import declarative_base
+
+__SA_INSTANCE_STATE__ = '_sa_instance_state'
 
 TEntity = TypeVar('TEntity')
 
-class BaseModel(DeclarativeBase, Generic[TEntity]):
+Base = declarative_base()
+
+class BaseModel(Base, Generic[TEntity]):
+    __abstract__ = True
+    __allow_unmapped__ = True
+
     __entity_cls__: Type[TEntity] = None
     __log__: bool = True
 
     def to_entity(self) -> TEntity:
-        model_attributes = self.__dict__
-        model_attributes.pop('_sa_instance_state', None)
+        model_attributes = { k: v for k, v in self.__dict__.copy().items() if not k.startswith("__") }
+        model_attributes.pop(__SA_INSTANCE_STATE__, None)
         return self.__entity_cls__(**model_attributes)
 
     def from_entity(self, entity: TEntity):
@@ -23,9 +32,9 @@ class BaseModel(DeclarativeBase, Generic[TEntity]):
 
     def merge_with_entity(self, entity: TEntity):
         for key, value in entity.__dict__.items():
-            if key != "_sa_instance_state" and value is not None:
+            if key != __SA_INSTANCE_STATE__ and value is not None:
                 setattr(self, key, value)
 
     @classmethod
-    def new_ulid(cls) -> ULID:
+    def new_id(cls) -> ULID:
         return ULID()

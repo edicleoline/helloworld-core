@@ -1,0 +1,1 @@
+from .compat import decode_backslashreplace as decode_backslashreplace
