@@ -33,8 +33,9 @@ class BaseModel(Base, Generic[TEntity]):
 
     def merge_with_entity(self, entity: TEntity):
         for key, value in entity.__dict__.items():
-            if key != __SA_INSTANCE_STATE__ and value is not None:
-                setattr(self, key, value)
+            if key == __SA_INSTANCE_STATE__ or value is None:
+                continue
+            setattr(self, key, value)
 
     @classmethod
     def new_id(cls) -> ULID:

@@ -26,6 +26,8 @@ class DatabaseSessionManager(AbstractDatabaseSessionManager):
         self._engine = create_async_engine(url)
         self._sessionmaker = async_sessionmaker(autocommit=False, autoflush=False, bind=self._engine)
 
+        return self
+
     async def create_session(self, authorization: str) -> AsyncSession:
         if self._sessionmaker is None:
             raise exceptions.DatabaseNotInitializedError

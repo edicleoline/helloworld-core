@@ -19,6 +19,8 @@ class DatabaseSessionManager(AbstractDatabaseSessionManager):
         self._client = AsyncIOMotorClient(url)
         self._database = self._client.get_database(db_name)
 
+        return self
+
     async def create_session(self, authorization: str) -> AgnosticClientSession:
         if self._database is None:
             raise exceptions.DatabaseNotInitializedError

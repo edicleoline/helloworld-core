@@ -1,1 +1,2 @@
 from .sqlalchemy.db_session_manager import DatabaseSessionManager as SQLADatabaseSessionManager
+from .mongo.db_session_manager import DatabaseSessionManager as MongoDatabaseSessionManager

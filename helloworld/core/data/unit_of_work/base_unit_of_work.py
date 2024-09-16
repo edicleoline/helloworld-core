@@ -9,6 +9,7 @@ from typing import get_type_hints, TypeVar, Any, Sequence, List, Type
 
 from .abstract_unit_of_work import AbstractUnitOfWork
 from helloworld.core.error import exceptions
+from helloworld.core.data.database.database_manager_factory import database_manager_factory
 
 __DI__ = "di"
 __INIT_PY__ = "__init__.py"
@@ -16,26 +17,25 @@ __RETURN__ = "return"
 __METADATA_NAME__ = "Name"
 __HELLO_PACKAGE_NICKNAME__ = "helloworld-"
 
+from ..database.abstract_db_session_manager import AbstractDatabaseSessionManager
+
 T = TypeVar("T")
 
 class BaseUnitOfWork(AbstractUnitOfWork):
-    def __init__(self, session_managers: Sequence[Any], authorization: str | None = None):
-        super().__init__(session_managers, authorization)
-        self._sessions_managers: List[(Any, Any)] = []
+    def __init__(self, authorization: str | None = None):
+        super().__init__(authorization)
+        self._sessions_managers: List[(str, Any)] = []
 
-    def _db_session_manager_by_type(self, type: Type[T]):
-        return next((x for x in self.session_managers if isinstance(x, type)), None)
-
-    async def _find_or_create_session(self, db_session_manager_type: Type[T]):
-        session = next((x for x in self._sessions_managers if x[0] == db_session_manager_type), None)
+    async def _find_or_create_session(self, db_session_manager_name: str):
+        session = next((x for x in self._sessions_managers if x[0] == db_session_manager_name), None)
         if session: return session[1]
 
-        session_manager = self._db_session_manager_by_type(db_session_manager_type)
+        session_manager: AbstractDatabaseSessionManager = await database_manager_factory.find(db_session_manager_name)
         if not session_manager: raise exceptions.NoSessionManagerForTypeError
 
         session = await session_manager.create_session(authorization=self.authorization)
         await session_manager.begin(session)
-        self._sessions_managers.append((db_session_manager_type, session))
+        self._sessions_managers.append((db_session_manager_name, session))
 
         return session
 
@@ -47,9 +47,8 @@ class BaseUnitOfWork(AbstractUnitOfWork):
                 func: Any = self.find_di_func_by_type(repository_type)
                 if not func: raise exceptions.NoDIFunctionFoundForTypeError
 
-                session = await self._find_or_create_session(func.db_session_manager_type)
-
-                session_manager = self._db_session_manager_by_type(func.db_session_manager_type)
+                session = await self._find_or_create_session(func.db_session_manager_name)
+                session_manager = await database_manager_factory.find(func.db_session_manager_name)
                 repository_instance = await session_manager.repository_factory.instance(func, session)
                 return repository_instance
 
@@ -107,7 +106,7 @@ class BaseUnitOfWork(AbstractUnitOfWork):
 
     async def _execute_for_all_sessions(self, action: str):
         for session in self._sessions_managers:
-            session_manager = self._db_session_manager_by_type(session[0])
+            session_manager = await database_manager_factory.find(session[0])
             try:
                 await getattr(session_manager, action)(session[1])
             except (Exception,): pass

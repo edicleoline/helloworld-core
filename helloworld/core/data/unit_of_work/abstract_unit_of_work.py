@@ -4,8 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, Any
 
 class AbstractUnitOfWork(ABC):
-    def __init__(self, session_managers: Sequence[Any], authorization: str | None = None):
-        self.session_managers: Sequence[Any] = session_managers
+    def __init__(self, authorization: str | None = None):
         self.authorization: str | None = authorization
 
     @abstractmethod
