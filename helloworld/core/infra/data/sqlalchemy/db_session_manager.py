@@ -4,13 +4,13 @@ import contextlib
 import importlib
 from datetime import datetime
 from typing import AsyncIterator, Callable
-from sqlalchemy.ext.asyncio import (AsyncConnection, AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine)
-from sqlalchemy import event
 
 from .base_model import BaseModel, Base
-from helloworld.core.data.database.abstract_db_session_manager import AbstractDatabaseSessionManager, AbstractRepositoryFactory
-from helloworld.core.data.repositories.abstract_repository import AbstractRepository
+from helloworld.core.data import AbstractDatabaseSessionManager, AbstractRepositoryFactory, AbstractRepository
 from helloworld.core.error import exceptions
+
+from sqlalchemy.ext.asyncio import (AsyncConnection, AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine)
+from sqlalchemy import event
 
 class DatabaseSessionManager(AbstractDatabaseSessionManager):
     def __init__(self):
@@ -82,7 +82,7 @@ class DatabaseSessionManager(AbstractDatabaseSessionManager):
                             session.sync_session.__models__.pop(str(instance_id), None)
 
                     if entities and len(entities) > 0:
-                        self.trigger_event(self, "after_commit", enitities=entities)
+                        self.trigger_event("after_commit", enitities=entities)
 
                 except Exception as e:
                     print(f"Error on log_commit_tasks: {e}")

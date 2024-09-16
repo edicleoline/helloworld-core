@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Generic, TypeVar, Type
+
 from ulid import ULID
 from sqlalchemy.ext.declarative import declarative_base
 

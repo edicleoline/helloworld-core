@@ -18,12 +18,6 @@ __HELLO_PACKAGE_NICKNAME__ = "helloworld-"
 
 T = TypeVar("T")
 
-def db_session_manager(type: T):
-    def decorator(func):
-        func.db_session_manager_type = type
-        return func
-    return decorator
-
 class BaseUnitOfWork(AbstractUnitOfWork):
     def __init__(self, session_managers: Sequence[Any], authorization: str | None = None):
         super().__init__(session_managers, authorization)

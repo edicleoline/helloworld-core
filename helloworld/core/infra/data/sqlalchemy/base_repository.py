@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from abc import ABC
 from typing import Optional, List, Type, overload
+
+from helloworld.core.data import AbstractRepository, TEntity, TModel
+from helloworld.core.error import exceptions
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-
-from helloworld.core.data.repositories.abstract_repository import AbstractRepository, TEntity, TModel
-from helloworld.core.error import exceptions
 
 class BaseRepository(AbstractRepository[TEntity, TModel], ABC):
     def __init__(self, session: AsyncSession, model_cls: Type[TModel], authorization: str | None = None):

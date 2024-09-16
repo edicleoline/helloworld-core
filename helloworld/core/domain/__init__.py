@@ -1,0 +1,1 @@
+from .entities.base_entity import BaseEntity, dataclass as dataclass

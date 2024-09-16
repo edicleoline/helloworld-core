@@ -3,11 +3,11 @@ from __future__ import annotations
 from abc import ABC
 from typing import Optional, List, Type, Any
 
+from helloworld.core.data import AbstractRepository, TEntity
+from helloworld.core.error import exceptions
+
 from motor.core import (AgnosticClientSession, AgnosticCollection)
 from ulid import ULID
-
-from helloworld.core.data.repositories.abstract_repository import AbstractRepository, TEntity
-from helloworld.core.error import exceptions
 
 class BaseRepository(AbstractRepository[TEntity], ABC):
     def __init__(self, session: AgnosticClientSession, collection: AgnosticCollection, entity_cls: Type[TEntity], authorization: str | None = None):

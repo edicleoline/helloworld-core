@@ -18,7 +18,7 @@ class AbstractRepositoryFactory(ABC):
 class AbstractDatabaseSessionManager(ABC, Events, Generic[_T]):
     def __init__(self):
         super().__init__()
-        self.register_event(self, "after_commit")
+        self.register_event("after_commit")
 
     @abstractmethod
     def init(self, **kwargs):
