@@ -90,8 +90,7 @@ class DatabaseSessionManager(AbstractDatabaseSessionManager):
             trigger_after_commit(_session.__changes__, session.sync_session.__models__)
         return session
 
-    async def begin(self, session: AsyncSession) -> None:
-        pass
+    async def begin(self, session: AsyncSession) -> None: ...
 
     @classmethod
     async def commit(cls, session: AsyncSession) -> None:

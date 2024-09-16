@@ -58,20 +58,14 @@ class HelloWorldError(HasDescriptionCode, Exception):
     def __str__(self) -> str:
         return self._sql_message()
 
-class ArgumentError(HelloWorldError):
-    pass
+class ArgumentError(HelloWorldError): ...
 
-class EntityNotFoundError(HelloWorldError):
-    pass
+class EntityNotFoundError(HelloWorldError): ...
 
-class DatabaseNotInitializedError(HelloWorldError):
-    pass
+class DatabaseNotInitializedError(HelloWorldError): ...
 
-class NoSessionManagerForTypeError(HelloWorldError):
-    pass
+class NoSessionManagerForTypeError(HelloWorldError): ...
 
-class NoDIFunctionFoundForTypeError(HelloWorldError):
-    pass
+class NoDIFunctionFoundForTypeError(HelloWorldError): ...
 
-class InvalidRequestError(HelloWorldError):
-    pass
+class InvalidRequestError(HelloWorldError): ...

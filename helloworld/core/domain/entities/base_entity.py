@@ -15,5 +15,4 @@ class BaseEntity(BaseModel):
     def to_dict(self):
         return self.to_dict()
 
-    def __repr__(self):
-        return
+    def __repr__(self): ...

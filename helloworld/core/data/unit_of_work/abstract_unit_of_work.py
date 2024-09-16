@@ -16,8 +16,7 @@ class AbstractUnitOfWork(ABC):
     async def rollback(self):
         raise NotImplementedError
 
-    async def __aexit__(self, exc_type, *_):
-        pass
+    async def __aexit__(self, exc_type, *_): ...
 
     async def __aenter__(self):
         return self
