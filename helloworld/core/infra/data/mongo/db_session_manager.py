@@ -59,5 +59,3 @@ class DatabaseSessionManager(AbstractDatabaseSessionManager):
         self._client.close()
         self._database = None
         self._client = None
-
-db_session_manager = DatabaseSessionManager()

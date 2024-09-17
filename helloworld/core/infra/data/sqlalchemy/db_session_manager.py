@@ -156,5 +156,3 @@ class DatabaseSessionManager(AbstractDatabaseSessionManager):
     @staticmethod
     async def drop_all(connection: AsyncConnection):
         await connection.run_sync(BaseModel.metadata.drop_all)
-
-db_session_manager = DatabaseSessionManager()

@@ -9,9 +9,6 @@ T = TypeVar("T", bound=AbstractDatabaseSessionManager)
 class DatabaseManagerFactory:
     _instances: Dict[str, AbstractDatabaseSessionManager] = {}
 
-    async def init(self):
-        pass
-
     async def instance(self, name: str, session_manager: type[AbstractDatabaseSessionManager]) -> AbstractDatabaseSessionManager:
         if name in self._instances:
             raise ValueError(f"Instance with name {name} already exists.")
