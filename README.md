@@ -34,3 +34,6 @@ Para saber mais detalhes sobre como utilizar **Helloworld Core**, confira també
 - [**Helloworld Account**](https://github.com/edicleoline/helloworld-account): Serviço de gerenciamento de contas de usuário.
 
 Esses projetos demonstram o uso completo do **Helloworld Core** em cenários reais.
+
+## Support
+If you enjoy this project, consider supporting me on [Patreon](https://www.patreon.com/edicleoline).
