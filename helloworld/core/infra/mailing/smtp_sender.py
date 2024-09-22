@@ -17,5 +17,4 @@ class SMTPSender(AbstractSender):
             "subject": subject,
             "body": body
         }
-        # await self.producer.send(priority, json.dumps(data).encode("utf-8"))
         print(data)
