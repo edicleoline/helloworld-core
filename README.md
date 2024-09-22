@@ -1,5 +1,7 @@
 # Helloworld Core
 
+"Don't worry, even though this README is in Portuguese, all the code speaks fluent Python... and English! So feel free to dive in — no need for a translator, just your coding skills! 😎"
+
 **Helloworld Core** é uma biblioteca projetada para agilizar o desenvolvimento de aplicações robustas e escaláveis. Implementa padrões essenciais como Use Cases, Unit of Work e Repository, além de suportar uma abordagem orientada a eventos.
 
 Inclui implementações de mensageria, permitindo processamento e troca de mensagens em larga escala. Serviço de envio de e-mails com suporte a templates, idiomas e gerenciamento de prioridades. Features que garantem uma integração eficiente e flexível em aplicações complexas.
@@ -23,3 +25,12 @@ A biblioteca suporta uma arquitetura orientada a eventos, permitindo a comunica�
 
 Helloworld Core oferece adaptadores de infraestrutura para SQLAlchemy e MongoDB, permitindo integração rápida e eficiente com diferentes bancos de dados. Além de adaptadores que certamente o ajudarão evoluir sua stack. Os adaptadores são configuráveis e podem ser estendidos para atender a necessidades específicas.
 
+
+## Explore mais
+
+Para saber mais detalhes sobre como utilizar **Helloworld Core**, confira também os seguintes projetos de referência:
+
+- [**Helloworld Auth**](https://github.com/edicleoline/helloworld-auth): Sistema de autenticação e autorização robusto usando JWT e várias estratégias de autenticação.
+- [**Helloworld Account**](https://github.com/edicleoline/helloworld-account): Serviço de gerenciamento de contas de usuário.
+
+Esses projetos demonstram o uso completo do **Helloworld Core** em cenários reais.
