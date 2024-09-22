@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Generic, List, Optional, overload
+from typing import Generic, List, Optional, overload, Literal
+
 from typing_extensions import TypeVar
 
 TEntity = TypeVar('TEntity')
 TModel = TypeVar('TModel', bound=Optional[object], default=None)
+
+LogicalOperator = Literal["and", "or"]
 
 class AbstractRepository(ABC, Generic[TEntity, TModel]):
     def __init__(self, authorization: str | None = None):
@@ -20,8 +23,11 @@ class AbstractRepository(ABC, Generic[TEntity, TModel]):
         raise NotImplementedError
 
     @overload
-    async def find(self, id: str) -> Optional[TEntity]:
+    async def find(self, id: str) -> TEntity | None:
         raise NotImplementedError
+
+    @overload
+    async def find(self, criteria: LogicalOperator = "and", **kwargs) -> TEntity | None: ...
 
     async def find(self, *args, **kwargs):
         raise NotImplementedError

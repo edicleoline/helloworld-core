@@ -1,41 +1,34 @@
 from __future__ import annotations
 
-import inspect
-import os
-import importlib.metadata
-import importlib.util
-from collections.abc import Callable
-from typing import get_type_hints, TypeVar, Any, Sequence, List, Type
+import re
+from typing import TypeVar, Any, List
 
 from .abstract_unit_of_work import AbstractUnitOfWork
 from helloworld.core.error import exceptions
-from helloworld.core.data.database.database_manager_factory import database_manager_factory
-
-__DI__ = "di"
-__INIT_PY__ = "__init__.py"
-__RETURN__ = "return"
-__METADATA_NAME__ = "Name"
-__HELLO_PACKAGE_NICKNAME__ = "helloworld-"
-
+from helloworld.core.services.service_manager import service_manager
 from ..database.abstract_db_session_manager import AbstractDatabaseSessionManager
+from helloworld.core.util.di import find_di_func_by_type
+
+__HELLO_PACKAGE_NICKNAME__ = "helloworld-"
+di_packages_pattern = re.compile(rf"^{re.escape(__HELLO_PACKAGE_NICKNAME__)}")
 
 T = TypeVar("T")
 
 class BaseUnitOfWork(AbstractUnitOfWork):
     def __init__(self, authorization: str | None = None):
         super().__init__(authorization)
-        self._sessions_managers: List[(str, Any)] = []
+        self._sessions_managers: List[(str, str, Any)] = []
 
-    async def _find_or_create_session(self, db_session_manager_name: str):
-        session = next((x for x in self._sessions_managers if x[0] == db_session_manager_name), None)
+    async def _find_or_create_session(self, service_type: str, service_name: str):
+        session = next((x for x in self._sessions_managers if x[0] == service_name), None)
         if session: return session[1]
 
-        session_manager: AbstractDatabaseSessionManager = await database_manager_factory.find(db_session_manager_name)
+        session_manager: AbstractDatabaseSessionManager = service_manager.get(service_type, service_name)
         if not session_manager: raise exceptions.NoSessionManagerForTypeError
 
         session = await session_manager.create_session(authorization=self.authorization)
         await session_manager.begin(session)
-        self._sessions_managers.append((db_session_manager_name, session))
+        self._sessions_managers.append((service_type, service_name, session))
 
         return session
 
@@ -44,49 +37,16 @@ class BaseUnitOfWork(AbstractUnitOfWork):
         class RepositoryFactory:
             @classmethod
             async def instance(cls, repository_type: T) -> T:
-                func: Any = self.find_di_func_by_type(repository_type)
-                if not func: raise exceptions.NoDIFunctionFoundForTypeError
+                func: Any = find_di_func_by_type(repository_type, di_packages_pattern)
+                if not func: raise exceptions.NoDIFunctionFoundForTypeError(repository_type)
 
-                session = await self._find_or_create_session(func.db_session_manager_name)
-                session_manager = await database_manager_factory.find(func.db_session_manager_name)
+                session = await self._find_or_create_session(func.__service_type__, func.__service_name__)
+                session_manager = service_manager.get(func.__service_type__, func.__service_name__)
+
                 repository_instance = await session_manager.repository_factory.instance(func, session)
                 return repository_instance
 
         return RepositoryFactory
-
-    #todo: throw if there is more than one found
-    #todo: cache it [now!]
-    @classmethod
-    def find_di_func_by_type(cls, repository_type: T) -> Callable | None:
-        packages = [dist.metadata[__METADATA_NAME__] for dist in importlib.metadata.distributions() if
-                    dist.metadata[__METADATA_NAME__].startswith(__HELLO_PACKAGE_NICKNAME__)]
-        for package_name in packages:
-            try:
-                module_name = package_name.replace("-", ".")
-                package = importlib.import_module(module_name)
-                package_path = package.__path__[0]
-
-                for root, dirs, files in os.walk(package_path):
-                    if not __DI__ in dirs: continue
-
-                    di_init_path = os.path.join(root, __DI__, __INIT_PY__)
-                    if not os.path.exists(di_init_path): continue
-
-                    spec = importlib.util.spec_from_file_location(f"{package_name}.{__DI__}", di_init_path)
-                    module = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(module)
-
-                    for name, func in inspect.getmembers(module, inspect.isfunction):
-                        type_hints = get_type_hints(func)
-                        return_hint = type_hints.get(__RETURN__, None)
-
-                        if return_hint != repository_type: continue
-
-                        return func
-            except Exception as e:
-                print(f"Error {package_name}: {e}")
-
-        return None
 
     async def __aexit__(self, exc_type, *_) -> None:
         if exc_type:
@@ -106,7 +66,8 @@ class BaseUnitOfWork(AbstractUnitOfWork):
 
     async def _execute_for_all_sessions(self, action: str):
         for session in self._sessions_managers:
-            session_manager = await database_manager_factory.find(session[0])
+            session_manager = service_manager.get(session[0], session[1])
             try:
-                await getattr(session_manager, action)(session[1])
-            except (Exception,): pass
+                await getattr(session_manager, action)(session[2])
+            except Exception as e:
+                print(e)

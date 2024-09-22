@@ -38,5 +38,5 @@ class BaseModel(Base, Generic[TEntity]):
             setattr(self, key, value)
 
     @classmethod
-    def new_id(cls) -> ULID:
-        return ULID()
+    def new_id(cls) -> str:
+        return str(ULID())

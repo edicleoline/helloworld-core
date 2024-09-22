@@ -66,6 +66,9 @@ class DatabaseSessionManager(AbstractDatabaseSessionManager):
 
                     for operation in changes:
                         for model in changes[operation]:
+                            if not model.__log__:
+                                continue
+
                             instance_id = id(getattr(model, "_sa_instance_state"))
                             __model__ = models.get(str(instance_id))
 

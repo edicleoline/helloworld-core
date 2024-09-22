@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any
 
 from typing_extensions import TypeVar, Generic
 
 from helloworld.core.data.repositories.abstract_repository import AbstractRepository
 from helloworld.core.event import Events
 
-_T = TypeVar("_T", bound=Any)
+_T = TypeVar("_T")
 
 class AbstractRepositoryFactory(ABC):
     @classmethod
@@ -21,7 +20,7 @@ class AbstractDatabaseSessionManager(ABC, Events, Generic[_T]):
         self.register_event("after_commit")
 
     @abstractmethod
-    def init(self, **kwargs):
+    def init(self, **kwargs) -> _T:
         raise NotImplementedError
 
     @abstractmethod

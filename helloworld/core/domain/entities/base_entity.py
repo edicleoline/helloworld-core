@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel, Field, constr
+from typing import Optional, Generic, TypeVar, Any
 
-from ulid import ULID
+T = TypeVar("T", bound="BaseEntity")
 
-class BaseEntity(BaseModel):
-    id: Optional[ULID] = Field(None, title="User ID")
+class BaseEntity(BaseModel, Generic[T]):
+    id: Optional[str] = Field(None, title="User ID")
 
     @classmethod
     def from_dict(cls, d = None):
@@ -16,3 +16,8 @@ class BaseEntity(BaseModel):
         return self.to_dict()
 
     def __repr__(self): ...
+
+    def copy(self: T, **kwargs: Any) -> T:
+        data = self.dict()
+        data.update(kwargs)
+        return self.__class__(**data)
