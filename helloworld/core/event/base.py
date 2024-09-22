@@ -21,7 +21,7 @@ class Events:
                 signal.on_next(kwargs)
                 return
 
-        print(f"Event '{event_name}' not registered.")
+        raise ValueError(f"Event '{event_name}' not registered.")
 
     def listen(self, event_name: str, observer: Callable[..., Any]) -> None:
         for event, signal in self._signals:
@@ -29,4 +29,4 @@ class Events:
                 signal.subscribe(observer)
                 return
 
-        print(f"Event '{event_name}' not registered, cannot listen.")
+        raise ValueError(f"Event '{event_name}' not registered, cannot listen.")
