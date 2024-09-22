@@ -30,8 +30,8 @@ Helloworld Core oferece adaptadores de infraestrutura para SQLAlchemy e MongoDB,
 
 Para saber mais detalhes sobre como utilizar **Helloworld Core**, confira também os seguintes projetos de referência:
 
-- [**Helloworld Auth**](https://github.com/edicleoline/helloworld-auth): Sistema de autenticação e autorização robusto usando JWT e várias estratégias de autenticação.
 - [**Helloworld Account**](https://github.com/edicleoline/helloworld-account): Serviço de gerenciamento de contas de usuário.
+- [**Helloworld Auth**](https://github.com/edicleoline/helloworld-auth): Sistema de autenticação e autorização robusto usando JWT e várias estratégias de autenticação.
 
 Esses projetos demonstram o uso completo do **Helloworld Core** em cenários reais.
 
