@@ -69,21 +69,23 @@ await ((await service_manager.register("messaging", "mailing", KafkaProducer))
     .senders.register(sender=SMTPSender, priority="medium")
 ```
 
-Implementar um Caso de Uso é fácil, especialmente quando você pode utilizar diferentes Repositórios conectados a fontes de dados independentes, seja qual for a tecnologia ou o adaptador de infraestrutura.
+Implementar um **Caso de Uso** é fácil, especialmente quando você pode utilizar diferentes Repositórios conectados a fontes de dados independentes, seja qual for a tecnologia ou o adaptador de infraestrutura.
 Não importa se um repositório utiliza SQLAlchemy, enquanto o outro utiliza Motor, para MongoDB, eles são tratados utilizando a mesma estratégia, e conversam entre si muito bem.
 
 
 ```python
+from abc import ABC
+
 from helloworld.core import BaseUseCaseUnitOfWork
 from helloworld.auth.features.identity import IdentityRepository, IdentityEntity
 from helloworld.core.mailing.services import MailingService
 
-class IdentifyUseCase(BaseUseCaseUnitOfWork[str, str], ABC):
+class IdentifyUseCase(BaseUseCaseUnitOfWork[str, IdentityEntity | None], ABC):
     async def execute(self, identifier: str) -> str | None:
         raise NotImplementedError
 
 class IdentifyUseCaseImpl(IdentifyUseCase):
-    async def execute(self, identifier: str) -> str | None:        
+    async def execute(self, identifier: str) -> IdentityEntity | None:        
         async with self.unit_of_work as unit_of_work:
             
             # IdentityRepository é uma abstração. Utilizamos Injeção 
@@ -120,6 +122,54 @@ class IdentifyUseCaseImpl(IdentifyUseCase):
                 subject="Welcome to Helloworld!",
                 first_name="Martin"
             )
+
+            return identity_entity
+```
+
+**Definindo um repositório**: a seguir, escrevemos sua definição, detalhando funções e responsabilidades.
+
+```python
+from abc import ABC
+from typing import overload
+
+from helloworld.core.data import AbstractRepository, TModel
+from helloworld.auth.features.identity import IdentityEntity
+
+# TModel é opcional, mas como pretendo criar uma implementação
+# deste repositório utilizando SQLALchemy, ele será muito útil.
+class IdentityRepository(AbstractRepository[IdentityEntity, TModel], ABC):
+    @overload
+    async def find(self, username: str) -> IdentityEntity | None: ...
+
+    async def find(self, *args, **kwargs):
+        raise NotImplementedError
+```
+
+**Implementando um repositório**: agora, na camada de infra, escrevemos o **adaptador**, por exemplo, utilizando SQLALchemy. 
+
+```python
+from typing import overload
+
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from helloworld.core.data.repositories.abstract_repository import LogicalOperator
+from helloworld.auth.features.identity import IdentityEntity
+from helloworld.auth.features.identity.data import IdentityRepository
+from helloworld.account.features.user import UserEntity
+
+from helloworld.core.infra.data.sqlalchemy import BaseRepository
+from .identity_model import IdentityModel #SQLALchemy model criada para IdentityEntity
+
+class IdentityRepositoryImpl(IdentityRepository, BaseRepository[IdentityEntity, IdentityModel]):
+    def __init__(self, session: AsyncSession, authorization: str | None = None):
+        super().__init__(session=session, model_cls=IdentityModel, authorization=authorization)
+
+    @overload
+    async def find(self, username: str) -> UserEntity | None:
+        return await self._find(username=username)
+
+    async def find(self, *args, **kwargs) -> IdentityEntity | None:
+        raise NotImplementedError
 ```
 
 ## TODO
