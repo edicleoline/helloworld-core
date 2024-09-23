@@ -152,7 +152,6 @@ from typing import overload
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from helloworld.core.data.repositories.abstract_repository import LogicalOperator
 from helloworld.auth.features.identity import IdentityEntity
 from helloworld.auth.features.identity.data import IdentityRepository
 from helloworld.account.features.user import UserEntity
