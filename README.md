@@ -87,7 +87,7 @@ class IdentifyUseCaseImpl(IdentifyUseCase):
             # de Dependência para resolver a implementação e trazer uma instância
             identity_repository: IdentityRepository = await unit_of_work.repository_factory.instance(IdentityRepository)
             
-            # Solução simples e elegante para realizar filtros
+            # Solução simples e muito eficaz para realizar filtros
             identity_entity: IdentityEntity | None = await identity_repository.find(id=identifier)
             
             # Operações CRUD sem mistérios
