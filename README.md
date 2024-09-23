@@ -77,8 +77,8 @@ Não importa se um repositório utiliza SQLAlchemy, enquanto o outro utiliza Mot
 from abc import ABC
 
 from helloworld.core import BaseUseCaseUnitOfWork
-from helloworld.auth.features.identity import IdentityRepository, IdentityEntity
 from helloworld.core.mailing.services import MailingService
+from helloworld.auth.features.identity import IdentityRepository, IdentityEntity
 
 class IdentifyUseCase(BaseUseCaseUnitOfWork[str, IdentityEntity | None], ABC):
     async def execute(self, identifier: str) -> str | None:
