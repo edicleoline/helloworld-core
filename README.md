@@ -133,7 +133,7 @@ from abc import ABC
 from typing import overload
 
 from helloworld.core.data import AbstractRepository, TModel
-from helloworld.auth.features.identity import IdentityEntity
+from ... import IdentityEntity # Entity criada utilizando BaseEntity
 
 # TModel é opcional, mas como pretendo criar uma implementação
 # deste repositório utilizando SQLALchemy, ele será muito útil.
@@ -152,12 +152,12 @@ from typing import overload
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from helloworld.auth.features.identity import IdentityEntity
 from helloworld.auth.features.identity.data import IdentityRepository
 from helloworld.account.features.user import UserEntity
 
 from helloworld.core.infra.data.sqlalchemy import BaseRepository
-from .identity_model import IdentityModel #SQLALchemy model criada para IdentityEntity
+from ... import IdentityEntity # Entity criada utilizando BaseEntity
+from ... import IdentityModel  # SQLALchemy model criada utilizando BaseModel
 
 class IdentityRepositoryImpl(IdentityRepository, BaseRepository[IdentityEntity, IdentityModel]):
     def __init__(self, session: AsyncSession, authorization: str | None = None):
@@ -169,6 +169,20 @@ class IdentityRepositoryImpl(IdentityRepository, BaseRepository[IdentityEntity, 
 
     async def find(self, *args, **kwargs) -> IdentityEntity | None:
         raise NotImplementedError
+```
+
+**Injeção de dependência**: não utilizamos nenhuma lib e resolvemos dependências tradicionalmente.
+A seguir utilizamos o decorator ***service_manager*** para informar à ***repository_factory*** como resolver qual ***database_session_manager*** utilizar.
+
+```python
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from helloworld.core.services.decorators import service_manager
+from ... import IdentityRepository, IdentityRepositoryImpl
+
+@service_manager("database", "auth")
+async def get_identity_repository(session: AsyncSession, authorization: str | None = None) -> IdentityRepository:
+    return IdentityRepositoryImpl(session, authorization)
 ```
 
 ## TODO
