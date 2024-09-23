@@ -25,6 +25,11 @@ A biblioteca suporta uma arquitetura orientada a eventos, permitindo a comunica�
 
 Helloworld Core oferece adaptadores de infraestrutura para SQLAlchemy e MongoDB, permitindo integração rápida e eficiente com diferentes bancos de dados. Além de adaptadores que certamente o ajudarão evoluir sua stack. Os adaptadores são configuráveis e podem ser estendidos para atender a necessidades específicas.
 
+## TODO
+
+Aqui estão algumas funcionalidades que já estamos implementando no **helloworld-core**:
+
+- **Migrations**: Adicionar suporte a banco de dados evolutivo.
 
 ## Explore mais
 
