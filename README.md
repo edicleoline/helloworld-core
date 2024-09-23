@@ -51,9 +51,9 @@ def db_session_manager_after_commit(enitities: Sequence[Dict]):
 E aqui, um exemplo de como inicializar serviços de mensageria e mailing.
 
 ```python
-from helloworld.core.infra.messaging import KafkaProducer
 from helloworld.core.mailing import Template
 from helloworld.core.mailing.services import MailingService
+from helloworld.core.infra.messaging import KafkaProducer
 from helloworld.core.infra.mailing import KafkaSender, SMTPSender
 
 await ((await service_manager.register("messaging", "mailing", KafkaProducer))
