@@ -6,16 +6,7 @@ from jinja2 import Environment, DictLoader
 
 from helloworld.core.mailing.services.abstract_sender import AbstractSender
 from .priority import Priority, PRIORITY_ORDER
-
-class Template:
-    name: str
-    content: str
-    lang: str
-
-    def __init__(self, name: str, lang: str, content: str):
-        self.name = name
-        self.content = content
-        self.lang = lang
+from ..template import Template
 
 
 async def render_template(template: Template, **kwargs):

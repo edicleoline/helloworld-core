@@ -48,6 +48,27 @@ def db_session_manager_after_commit(enitities: Sequence[Dict]):
     .init("mongodb://localhost:27017", "helloworld")
 ```
 
+E aqui, um exemplo de como inicializar serviços de mensageria e mailing.
+
+```python
+from helloworld.core.infra.messaging import KafkaProducer
+from helloworld.core.mailing import Template
+from helloworld.core.mailing.services import MailingService
+from helloworld.core.infra.mailing import KafkaSender, SMTPSender
+
+await ((await service_manager.register("messaging", "mailing", KafkaProducer))
+    .init(bootstrap_servers="localhost:9092")) \
+    .start()
+
+(await service_manager.register("mailing", "public", MailingService)) \
+    .init() \
+    .templates.register(Template("welcome", "en", "<html>Welcome, {{ first_name }}!</html>")) \
+    .templates.register(Template("welcome", "pt", "<html>Bem-vindo, {{ first_name }}!</html>")) \
+    .templates.register(Template("auto-password-reset", "en", "<html>Reset password, {{ first_name }} {{ last_name }}!</html>")) \
+    .senders.register(sender=KafkaSender, priority="critical", producer=service_manager.get("messaging", "mailing")) \
+    .senders.register(sender=SMTPSender, priority="medium")
+```
+
 ## TODO
 
 Aqui estão algumas funcionalidades que já estamos implementando no **helloworld-core**:
