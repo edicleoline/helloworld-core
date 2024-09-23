@@ -105,8 +105,8 @@ class IdentifyUseCaseImpl(IdentifyUseCase):
             my_repository: MyRepository = await unit_of_work.repository_factory.instance(MyRepository)
             
             # Não, você não precisa se preocupar com as transações realizadas.
-            # Utilizamos Contexto! Todos os repositórios compartilham a mesma Unit Of Work.
-            # O contexto trata os commit's e rollback's de forma automática.
+            # Utilizamos Gerenciadores de Contexto, e todos os repositórios compartilham a mesma Unit Of Work.
+            # O Contexto trata os commit's e rollback's de forma automática.
 ```
 
 ## TODO
