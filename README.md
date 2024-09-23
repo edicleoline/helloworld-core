@@ -69,7 +69,9 @@ await ((await service_manager.register("messaging", "mailing", KafkaProducer))
     .senders.register(sender=SMTPSender, priority="medium")
 ```
 
-Implementar um Caso de Uso é simples, ainda mais quando você pode utilizar diferentes Repositórios apontando para fonte de dados independentes.
+Implementar um Caso de Uso é fácil, especialmente quando você pode utilizar diferentes Repositórios conectados a fontes de dados independentes, seja qual for a tecnologia ou o adaptador de infraestrutura.
+Não importa se um repositório utiliza SQLAlchemy (SQL), enquanto o outro utiliza Motor, para MongoDB, eles são tratados utilizando a mesma estratégia, e conversam entre si muito bem.
+
 
 ```python
 from helloworld.core import BaseUseCaseUnitOfWork
