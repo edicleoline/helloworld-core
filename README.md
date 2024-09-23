@@ -172,7 +172,7 @@ class IdentityRepositoryImpl(IdentityRepository, BaseRepository[IdentityEntity, 
 ```
 
 **Injeção de dependência**: não utilizamos nenhuma lib e resolvemos dependências tradicionalmente.
-A seguir utilizamos o decorator ***service_manager*** para informar à ***repository_factory*** como resolver qual ***database_session_manager*** utilizar.
+A seguir utilizamos o decorator ***service_manager*** para informar à ***repository_factory*** qual ***database_session_manager*** utilizar.
 
 ```python
 from sqlalchemy.ext.asyncio import AsyncSession
