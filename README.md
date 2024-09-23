@@ -176,13 +176,19 @@ A seguir utilizamos o decorator ***service_manager*** para informar à ***reposi
 
 ```python
 from sqlalchemy.ext.asyncio import AsyncSession
+from motor.core import AgnosticDatabase, AgnosticClientSession
 
 from helloworld.core.services.decorators import service_manager
 from ... import IdentityRepository, IdentityRepositoryImpl
+from ... import MyRepository, MyRepositoryImpl
 
 @service_manager("database", "auth")
 async def get_identity_repository(session: AsyncSession, authorization: str | None = None) -> IdentityRepository:
     return IdentityRepositoryImpl(session, authorization)
+
+@service_manager("database", "nosql")
+async def get_db_log_repository(session: AgnosticClientSession, database: AgnosticDatabase, authorization: str | None = None) -> MyRepository:
+    return MyRepositoryImpl(session, database, authorization)
 ```
 
 ## TODO
