@@ -25,6 +25,29 @@ A biblioteca suporta uma arquitetura orientada a eventos, permitindo a comunica�
 
 Helloworld Core oferece adaptadores de infraestrutura para SQLAlchemy e MongoDB, permitindo integração rápida e eficiente com diferentes bancos de dados. Além de adaptadores que certamente o ajudarão evoluir sua stack. Os adaptadores são configuráveis e podem ser estendidos para atender a necessidades específicas.
 
+## Exemplo de Uso
+
+Aqui está um exemplo básico de como usar a biblioteca para trabalhar com múltiplas fontes de dados.
+
+```python
+from helloworld.core.services import service_manager
+from helloworld.core.infra.data import SQLADatabaseSessionManager, MongoDatabaseSessionManager
+
+def db_session_manager_after_commit(enitities: Sequence[Dict]):
+    print("Hey, you just committed the following entities to the database:", enitities)
+
+(await service_manager.register("database", "auth", SQLADatabaseSessionManager))\
+    .init("postgresql+asyncpg://postgres:password@localhost:5432/helloworld_auth")\
+    .listen("after_commit", db_session_manager_after_commit)
+
+(await service_manager.register("database", "main", SQLADatabaseSessionManager))\
+    .init("postgresql+asyncpg://postgres:password@localhost:5432/helloworld")\
+    .listen("after_commit", db_session_manager_after_commit)
+
+(await service_manager.register("database", "nosql", MongoDatabaseSessionManager))\
+    .init("mongodb://localhost:27017", "helloworld")
+```
+
 ## TODO
 
 Aqui estão algumas funcionalidades que já estamos implementando no **helloworld-core**:
