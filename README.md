@@ -94,7 +94,7 @@ class IdentifyUseCaseImpl(IdentifyUseCase):
             
             # Operações CRUD sem mistérios
             await identity_repository.save(IdentityEntity(email="bob@uncle.com"))
-            await identity_repository.delete(entity_id="01J8DBYAAE5M3D4H5XGMPRRWHX")
+            await identity_repository.delete(id="01J8DBYAAE5M3D4H5XGMPRRWHX")
             
             # Exemplo
             from mypackage.features.example import MyRepository

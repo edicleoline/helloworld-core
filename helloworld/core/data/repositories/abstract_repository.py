@@ -37,5 +37,5 @@ class AbstractRepository(ABC, Generic[TEntity, TModel]):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, entity_id: str) -> None:
+    async def delete(self, id: str) -> None:
         raise NotImplementedError
