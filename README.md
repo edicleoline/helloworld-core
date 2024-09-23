@@ -70,7 +70,7 @@ await ((await service_manager.register("messaging", "mailing", KafkaProducer))
 ```
 
 Implementar um Caso de Uso é fácil, especialmente quando você pode utilizar diferentes Repositórios conectados a fontes de dados independentes, seja qual for a tecnologia ou o adaptador de infraestrutura.
-Não importa se um repositório utiliza SQLAlchemy (SQL), enquanto o outro utiliza Motor, para MongoDB, eles são tratados utilizando a mesma estratégia, e conversam entre si muito bem.
+Não importa se um repositório utiliza SQLAlchemy, enquanto o outro utiliza Motor, para MongoDB, eles são tratados utilizando a mesma estratégia, e conversam entre si muito bem.
 
 
 ```python
