@@ -76,6 +76,7 @@ Não importa se um repositório utiliza SQLAlchemy, enquanto o outro utiliza Mot
 ```python
 from helloworld.core import BaseUseCaseUnitOfWork
 from helloworld.auth.features.identity import IdentityRepository, IdentityEntity
+from helloworld.core.mailing.services import MailingService
 
 class IdentifyUseCase(BaseUseCaseUnitOfWork[str, str], ABC):
     async def execute(self, identifier: str) -> str | None:
@@ -107,6 +108,18 @@ class IdentifyUseCaseImpl(IdentifyUseCase):
             # Não, você não precisa se preocupar com as transações realizadas.
             # Utilizamos Gerenciadores de Contexto, e todos os repositórios compartilham a mesma Unit Of Work.
             # O Contexto trata os commit's e rollback's de forma automática.
+
+            # Acesso rápido a serviços
+            mailing_service: MailingService = self.services.get("mailing", "public")
+            
+            await mailing_service.send(
+                template="welcome",
+                lang="en",
+                priority="critical",
+                to="fowler@martin.com",
+                subject="Welcome to Helloworld!",
+                first_name="Martin"
+            )
 ```
 
 ## TODO
