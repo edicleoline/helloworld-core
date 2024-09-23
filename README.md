@@ -69,6 +69,44 @@ await ((await service_manager.register("messaging", "mailing", KafkaProducer))
     .senders.register(sender=SMTPSender, priority="medium")
 ```
 
+Implementar um Caso de Uso é simples, ainda mais quando você pode utilizar diferentes Repositórios apontando para fonte de dados independentes.
+
+```python
+from helloworld.core import BaseUseCaseUnitOfWork
+from helloworld.auth.features.identity import IdentityRepository, IdentityEntity
+
+class IdentifyUseCase(BaseUseCaseUnitOfWork[str, str], ABC):
+    async def execute(self, identifier: str) -> str | None:
+        raise NotImplementedError
+
+class IdentifyUseCaseImpl(IdentifyUseCase):
+    async def execute(self, identifier: str) -> str | None:        
+        async with self.unit_of_work as unit_of_work:
+            
+            # IdentityRepository é uma abstração. Utilizamos Injeção 
+            # de Dependência para resolver a implementação e trazer uma instância
+            identity_repository: IdentityRepository = await unit_of_work.repository_factory.instance(IdentityRepository)
+            
+            # Solução simples e elegante para realizar filtros
+            identity_entity: IdentityEntity | None = await identity_repository.find(id=identifier)
+            
+            # Operações CRUD sem mistérios
+            await identity_repository.save(IdentityEntity(email="bob@uncle.com"))
+            await identity_repository.delete(entity_id="01J8DBYAAE5M3D4H5XGMPRRWHX")
+            
+            # Exemplo
+            from mypackage.features.example import MyRepository
+            
+            # Uma implementação NoSQL foi implementada para este repositório,
+            # e não precisamos saber onde está. Nosso gerenciador de DI resolverá.
+            # Você pode usar outra fonte de dados, em outra tecnologia, no mesmo Unit of Work!
+            my_repository: MyRepository = await unit_of_work.repository_factory.instance(MyRepository)
+            
+            # Não, você não precisa se preocupar com as transações realizadas.
+            # Utilizamos Contexto! Todos os repositórios compartilham a mesma Unit Of Work.
+            # O contexto trata os commit's e rollback's de forma automática.
+```
+
 ## TODO
 
 Aqui estão algumas funcionalidades que já estamos implementando no **helloworld-core**:
