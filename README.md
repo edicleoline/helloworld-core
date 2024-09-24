@@ -70,9 +70,9 @@ await ((await service_manager.register("messaging", "mailing", KafkaProducer))
 
 (await service_manager.register("mailing", "public", MailingService)) \
     .init() \
-    .templates.register(Template("welcome", "en", "<html>Welcome, {{ first_name }}!</html>")) \
-    .templates.register(Template("welcome", "pt", "<html>Bem-vindo, {{ first_name }}!</html>")) \
-    .templates.register(Template("auto-password-reset", "en", "<html>Reset password, {{ first_name }} {{ last_name }}!</html>")) \
+    .templates.register(Template("welcome", "en", "<mjml>Welcome, {{ first_name }}!</mjml>")) \
+    .templates.register(Template("welcome", "pt", "<mjml>Bem-vindo, {{ first_name }}!</mjml>")) \
+    .templates.register(Template("auto-password-reset", "en", "<mjml>Reset password, {{ first_name }} {{ last_name }}!</mjml>")) \
     .senders.register(sender=KafkaSender, priority="critical", producer=service_manager.get("messaging", "mailing")) \
     .senders.register(sender=SMTPSender, priority="medium")
 ```
