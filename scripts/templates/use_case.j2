@@ -1,0 +1,15 @@
+from __future__ import annotations
+
+from abc import ABC
+
+from helloworld.core import BaseUseCaseUnitOfWork
+from helloworld.auth.features.identity import IdentityRepository, IdentityEntity
+
+class IdentifyUseCase(BaseUseCaseUnitOfWork[str, str], ABC):
+    async def execute(self, identifier: str) -> str | None:
+        raise NotImplementedError
+
+class IdentifyUseCaseImpl(IdentifyUseCase):
+    async def execute(self, identifier: str) -> str | None:
+        async with self.unit_of_work as unit_of_work:
+            pass

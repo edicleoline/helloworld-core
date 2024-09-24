@@ -1,6 +1,14 @@
 # Helloworld Core
 
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)
+![Microservices](https://img.shields.io/badge/Microservices-Architecture-orange)
+![ACID](https://img.shields.io/badge/ACID-Compliant-orange)
+![SQL](https://img.shields.io/badge/SQL-Database-blue?logo=postgresql)
+![NoSQL](https://img.shields.io/badge/NoSQL-Database-green?logo=mongodb)
+
 "Don't worry, even though this README is in Portuguese, all the code speaks fluent Python... and English! So feel free to dive in — no need for a translator, just your coding skills! 😎"
+
+## Introdução
 
 **Helloworld Core** é uma biblioteca projetada para agilizar o desenvolvimento de aplicações robustas e escaláveis. Implementa padrões essenciais como Use Cases, Unit of Work e Repository, além de suportar uma abordagem orientada a eventos.
 
