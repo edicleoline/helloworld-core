@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import contextlib
-import importlib
 from datetime import datetime
 from typing import AsyncIterator, Callable
 
@@ -17,9 +16,6 @@ class DatabaseSessionManager(AbstractDatabaseSessionManager):
         self._engine: AsyncEngine | None = None
         self._sessionmaker: async_sessionmaker | None = None
 
-        self._get_create_use_case = None
-        self._db_log_create_use_case = None
-
         super().__init__()
 
     def init(self, url: str):
@@ -31,10 +27,6 @@ class DatabaseSessionManager(AbstractDatabaseSessionManager):
     async def create_session(self, authorization: str) -> AsyncSession:
         if self._sessionmaker is None:
             raise exceptions.DatabaseNotInitializedError
-
-        di_module = importlib.import_module("helloworld.log.features.database_log.di")
-        self._get_create_use_case = di_module.get_create_use_case
-        self._db_log_create_use_case = await self._get_create_use_case(authorization=authorization)
 
         session = self._sessionmaker()
 

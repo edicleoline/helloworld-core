@@ -9,3 +9,21 @@ if True:  # zimports removes the tailing comments
 
 
 _LITERAL_TYPES = frozenset([typing.Literal, Literal])
+
+
+def cast_value(value: str):
+    try:
+        return int(value)
+    except ValueError:
+        pass
+
+    try:
+        return float(value)
+    except ValueError:
+        pass
+
+    lower_value = value.lower()
+    if lower_value in {"true", "false"}:
+        return lower_value == "true"
+
+    return value

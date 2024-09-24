@@ -14,6 +14,8 @@ class DatabaseSessionManager(AbstractDatabaseSessionManager):
         self._database: AgnosticDatabase | None = None
         self.db_name = None
 
+        super().__init__()
+
     def init(self, url: str, db_name: str):
         self.db_name = db_name
         self._client = AsyncIOMotorClient(url)
