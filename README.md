@@ -203,6 +203,7 @@ async def get_db_log_repository(session: AgnosticClientSession, database: Agnost
 
 Aqui estão algumas funcionalidades que já estamos implementando no **helloworld-core**:
 
+- **Tests**: Cobrir 100% do código.
 - **Migrations**: Adicionar suporte a banco de dados evolutivo.
 
 ## Explore mais
