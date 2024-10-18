@@ -23,7 +23,7 @@ class AbstractRepository(ABC, Generic[TEntity, TModel]):
         raise NotImplementedError
 
     @overload
-    async def find(self, id: str) -> TEntity | None:
+    async def find(self, id: int) -> TEntity | None:
         raise NotImplementedError
 
     @overload
@@ -37,5 +37,5 @@ class AbstractRepository(ABC, Generic[TEntity, TModel]):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, id: str) -> None:
+    async def delete(self, id: int) -> None:
         raise NotImplementedError

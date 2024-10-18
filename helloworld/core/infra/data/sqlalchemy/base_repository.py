@@ -23,13 +23,15 @@ class BaseRepository(AbstractRepository[TEntity, TModel], ABC):
             model.merge_with_entity(entity)
         else:
             model = self.model_cls().from_entity(entity)
-            model.id = str(self.model_cls.new_id())
+            model.id = self.model_cls.new_id()
 
         self.session.add(model)
         return model.to_entity()
 
     async def create(self, entity: TEntity) -> TEntity:
-        pass
+        model = self.model_cls().from_entity(entity)
+        self.session.add(model)
+        return model.to_entity()
 
     async def _find_criteria(self, criteria: LogicalOperator = "and", **kwargs):
         condition = (and_ if criteria == "and" else or_)(*(getattr(self.model_cls, k) == v for k, v in kwargs.items()))
@@ -45,7 +47,7 @@ class BaseRepository(AbstractRepository[TEntity, TModel], ABC):
         return (await self.session.execute(stmt)).scalar_one_or_none()
 
     @overload
-    async def find(self, id: str) -> Optional[TEntity]: ...
+    async def find(self, id: int) -> Optional[TEntity]: ...
 
     @overload
     async def find(self, criteria: LogicalOperator = "and", **kwargs):
@@ -60,7 +62,7 @@ class BaseRepository(AbstractRepository[TEntity, TModel], ABC):
     async def all(self) -> List[TEntity]:
         pass
 
-    async def delete(self, id: str) -> None:
+    async def delete(self, id: int) -> None:
         model = await self.__find(id=id)
         if not model: raise exceptions.EntityNotFoundError
         await self.session.delete(model)

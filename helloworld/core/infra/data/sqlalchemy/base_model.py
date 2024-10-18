@@ -2,8 +2,11 @@ from __future__ import annotations
 
 from typing import Generic, TypeVar, Type
 
-from ulid import ULID
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import BigInteger
+from sqlalchemy.orm import Mapped, mapped_column
+
+from helloworld.core.util.snow_flake import snow_flake
 
 __SA_INSTANCE_STATE__ = '_sa_instance_state'
 
@@ -17,6 +20,8 @@ class BaseModel(Base, Generic[TEntity]):
 
     __entity_cls__: Type[TEntity] = None
     __log__: bool = True
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
 
     def to_entity(self) -> TEntity:
         model_attributes = { k: v for k, v in self.__dict__.copy().items() if not k.startswith("__") }
@@ -38,5 +43,5 @@ class BaseModel(Base, Generic[TEntity]):
             setattr(self, key, value)
 
     @classmethod
-    def new_id(cls) -> str:
-        return str(ULID())
+    def new_id(cls) -> int:
+        return snow_flake.generate()
