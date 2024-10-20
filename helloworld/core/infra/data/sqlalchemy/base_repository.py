@@ -17,7 +17,7 @@ class BaseRepository(AbstractRepository[TEntity, TModel], ABC):
         super().__init__(authorization=authorization)
 
     async def save(self, entity: TEntity) -> TEntity:
-        if entity.id:
+        if isinstance(entity.id, (int, )):
             model = await self.__find(id=entity.id)
             if not model: raise exceptions.EntityNotFoundError
             model.merge_with_entity(entity)

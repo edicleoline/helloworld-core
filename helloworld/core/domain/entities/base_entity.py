@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, Field, constr
+from pydantic import BaseModel, Field, constr, field_serializer
 from typing import Optional, Generic, TypeVar, Any
 
 from helloworld.core.util.snow_flake import snow_flake
@@ -10,14 +10,9 @@ T = TypeVar("T", bound="BaseEntity")
 class BaseEntity(BaseModel, Generic[T]):
     id: Optional[int] = Field(None, title="Entity id")
 
-    @classmethod
-    def from_dict(cls, d = None):
-        return cls(**d)
-
-    def to_dict(self):
-        return self.to_dict()
-
-    def __repr__(self): ...
+    @field_serializer("id")
+    def serialize_message(self, id: str | int, _info):
+        return str(id)
 
     def copy(self: T, **kwargs: Any) -> T:
         data = self.dict()
